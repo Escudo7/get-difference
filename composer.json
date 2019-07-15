@@ -1,0 +1,22 @@
+{
+    "name": "esqudo/php-project-lvl2",
+    "description": "Educational project",
+    "authors": [
+        {
+            "name": "Escudo7",
+            "email": "perm.fest@yandex.ru"
+        }
+    ],
+    "bin": [
+        "gendiff"
+    ],
+    "scripts": {
+        "phpcs": "phpcs"
+    },
+    "require": {
+        "docopt/docopt": "^1.0"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "3.*"
+    }
+}
