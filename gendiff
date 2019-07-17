@@ -1,5 +1,13 @@
 #!/usr/bin/env php
 <?php
+$path1 = __DIR__ . '/vendor/autoload.php';
+$path2 = __DIR__ . '/../../autoload.php';
+if (file_exists($path1)) {
+  require $path1;
+} else {
+  require $path2;
+}
+
 $doc = <<<DOC
 Generate diff
 
@@ -12,13 +20,7 @@ Options:
   --format <fmt>    Report format [default: pretty]
 
 DOC;
-$path1 = __DIR__ . '/vendor/docopt/docopt/src/docopt.php';
-$path2 = __DIR__ . '/../../../docopt/docopt/src/docopt.php';
-if (file_exists($path1)) {
-  require $path1;
-} else {
-  require $path2;
-}
+
 $args = Docopt::handle($doc, array('version'=>'Generate diff 1.0'));
 foreach ($args as $k=>$v) {
   echo $k.': '.json_encode($v).PHP_EOL; 
