@@ -1,3 +1,5 @@
 language: php
 install: make install
-script: make lint
+script: 
+  make lint
+  make test
