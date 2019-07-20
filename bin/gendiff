@@ -2,6 +2,7 @@
 <?php
 
 use function \Project\getDiff\getDiff;
+use function \Project\getDiff\example;
 
 $path1 = __DIR__ . '/../vendor/autoload.php';
 $path2 = __DIR__ . '/../../../autoload.php';
