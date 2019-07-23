@@ -12,8 +12,10 @@
     ],
     "autoload": {
         "files": [
-            "src/getdata.php",
-            "src/getdiff.php"
+            "src/buildAst.php",
+            "src/getData.php",
+            "src/getDiff.php",
+            "src/renderer.php"
         ]
     },
     "scripts": {
