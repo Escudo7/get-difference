@@ -6,15 +6,37 @@ const ADDED = '  + ';
 const DELETED = '  - ';
 const INDENT = '    ';
 
-function render($diff, $indent = '')
+function render($ast, $indent = '')
 {
-    $view = [];
-    foreach ($diff as $identifier => $item) {
+    $nodes = array_keys($ast);
+    $view = array_reduce($nodes, function ($acc, $node) use ($ast) {
+        $sheet = $ast[$node];
+        $keys = array_keys($sheet);
+        switch ($node) {
+            case 'added':
+                $acc[] = array_reduce($keys, function ($viewAdded, $key) use ($sheet) {
+                    ?
+                }, []);
+            $acc[] = renderAdded($node, $indent);
+                break;
+            case 'deleted':
+                break;
+            case 'modified':
+                break;
+            case 'unmodified':
+                break;
+            case 'nested':
+        }
+    }, []);
+    
+    
+    
+
         if ($identifier === 'added') {
             foreach ($item as $key => $value) {
                 if (!is_array($value)) {
-                    $formatedValue = isBoolean($value) ? convertBoolToStr($value) : $value;
-                    $view[] = $indent . ADDED . "$key: $formatedValue";
+                    $convertedValue = convertValue($value);
+                    $view[] = $indent . ADDED . "$key: $convertedValue";
                 } else {
                     $newIndent = $indent . INDENT . INDENT;
                     $view[] = $indent . ADDED . "$key: {";
@@ -25,7 +47,7 @@ function render($diff, $indent = '')
         } elseif ($identifier === 'deleted') {
             foreach ($item as $key => $value) {
                 if (!is_array($value)) {
-                    $formatedValue = isBoolean($value) ? convertBoolToStr($value) : $value;
+                    $convertedValue = convertValue($value);
                     $view[] = $indent . DELETED . "$key: $formatedValue";
                 } else {
                     $newIndent = $indent . INDENT . INDENT;
@@ -37,7 +59,7 @@ function render($diff, $indent = '')
         } elseif ($identifier === 'shared') {
             foreach ($item as $key => $value) {
                 if (!is_array($value)) {
-                    $formatedValue = isBoolean($value) ? convertBoolToStr($value) : $value;
+                    $convertedValue = convertValue($value);
                     $view[] = $indent . INDENT . "$key: $formatedValue";
                 } else {
                     $newIndent = $indent . INDENT . INDENT;
@@ -48,8 +70,8 @@ function render($diff, $indent = '')
             }
         } elseif ($identifier === 'modified') {
             foreach ($item as $key => $value) {
-                $formatedNewValue = isBoolean($value['newValue']) ? convertBoolToStr($value) : $value['newValue'];
-                $formatedOldValue = isBoolean($value['oldValue']) ? convertBoolToStr($value) : $value['oldValue'];
+                $convertedNewValue = convertValue($value['newValue']);
+                $convertedOldValue = convertValue($value['oldValue']);
                 $view[] = $indent . ADDED . "$key: $formatedNewValue";
                 $view[] = $indent . DELETED . "$key: $formatedOldValue";
             }
@@ -64,15 +86,28 @@ function render($diff, $indent = '')
     }
     return implode("\n", $view);
 }
+function renderAdded($data, $indent)
+{
+    if (is_array($data)) {
+        ?
+    } else {
+        $convertedValue = convertValue($$data);
+        $view[] = $indent . ADDED . "$key: $convertedValue";
+    }
+}
+
 
 function isBoolean($data)
 {
     return gettype($data) === 'boolean';
 }
 
-function convertBoolToStr($data)
+function convertValue($data)
 {
-    return $data === true ? 'true' : 'false';
+    if (isBoolean($data)) {
+        return $data === true ? 'true' : 'false';
+    }
+    return $data;    
 }
 
 function renderArray($data, $indent)
