@@ -37,14 +37,14 @@ function renderNodesModified($data, $indent)
         $viewModifiedValue = [];
         if ($value['oldValue']) {
             if (is_array($value['oldValue'])) {
-                $viewModifiedValue[] = $indent . renderArray($key, $value['oldValue'], $indent, DELETED);
+                $viewModifiedValue[] = renderArray($key, $value['oldValue'], $indent, DELETED);
             } else {
                 $viewModifiedValue[] = $indent . DELETED . "$key: " . convertValue($value['oldValue']);
             }
         }
         if ($value['newValue']) {
             if (is_array($value['newValue'])) {
-                $viewModifiedValue[] = $indent . renderArray($key, $value['newValue'], $indent, ADDED);
+                $viewModifiedValue[] = renderArray($key, $value['newValue'], $indent, ADDED);
             } else {
                 $viewModifiedValue[] = $indent . ADDED . "$key: " . convertValue($value['newValue']);
             }

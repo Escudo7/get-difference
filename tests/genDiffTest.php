@@ -55,8 +55,12 @@ class MyTest extends TestCase
                 "key2" => "value2"
             ],
             "modifiedArray" => [
-                "big" => 'head',
-                'cat' => 'dog'
+                "big" => "head",
+                "newCat" => [
+                    "one" => "pers",
+                    "two" => "sfinks"
+                    ],
+                "cat" => "dog"
             ],
             "newArray" => [
                 "newKey1" => "value1",
@@ -81,6 +85,10 @@ class MyTest extends TestCase
     modifiedArray: {
       - big: bag
       + big: head
+      + newCat: {
+            one: pers
+            two: sfinks
+        }
         cat: dog
     }
 }\n";
