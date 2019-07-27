@@ -4,12 +4,14 @@ namespace Project\getData;
 
 use Symfony\Component\Yaml\Yaml;
 
-function getData($file, $format)
+function getData($pathToFile)
 {
-    $content = file_get_contents($file);
-    if ($format === 'pretty') {
+    $pathInfo = pathinfo($pathToFile);
+    $extension = $pathInfo['extension'];
+    $content = file_get_contents($pathToFile);
+    if ($extension === 'json') {
         $data = json_decode($content, true);
-    } elseif ($format === 'yaml') {
+    } elseif ($extension === 'yml') {
         $data = Yaml::parse($content);
     }
     return $data;
