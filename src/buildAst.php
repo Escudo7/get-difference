@@ -10,7 +10,7 @@ function buildAst($data1, $data2)
     $ast = array_reduce($keys, function ($acc, $key) use ($data1, $data2) {
         if (isset($data1[$key]) && isset($data2[$key])) {
             if ($data1[$key] === $data2[$key]) {
-                $acc['shared'][$key] = $data1[$key];
+                $acc['unmodified'][$key] = $data1[$key];
             } else {
                 if (is_array($data1[$key]) && is_array($data2[$key])) {
                     $acc['nested'][$key] = buildAst($data1[$key], $data2[$key]);
@@ -20,9 +20,11 @@ function buildAst($data1, $data2)
                 }
             }
         } elseif (isset($data1[$key])) {
-            $acc['deleted'][$key] = $data1[$key];
+            $acc['modified'][$key]['oldValue'] = $data1[$key];
+            $acc['modified'][$key]['newValue'] = '';
         } else {
-            $acc['added'][$key] = $data2[$key];
+            $acc['modified'][$key]['oldValue'] = '';
+            $acc['modified'][$key]['newValue'] = $data2[$key];
         }
         return $acc;
     }, []);
