@@ -20,11 +20,9 @@ function buildAst($data1, $data2)
                 }
             }
         } elseif (isset($data1[$key])) {
-            $acc['modified'][$key]['oldValue'] = $data1[$key];
-            $acc['modified'][$key]['newValue'] = '';
+            $acc['deleted'][$key]['oldValue'] = $data1[$key];
         } else {
-            $acc['modified'][$key]['oldValue'] = '';
-            $acc['modified'][$key]['newValue'] = $data2[$key];
+            $acc['added'][$key]['newValue'] = $data2[$key];
         }
         return $acc;
     }, []);

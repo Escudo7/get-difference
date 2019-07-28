@@ -13,9 +13,13 @@
     "autoload": {
         "files": [
             "src/buildAst.php",
-            "src/getData.php",
+            "src/getData/getData.php",
+            "src/getData/json.php",
+            "src/getData/yml.php",
             "src/getDiff.php",
-            "src/renderer.php"
+            "src/renderer/plain.php",
+            "src/renderer/pretty.php",
+            "src/renderer/utilities.php"
         ]
     },
     "scripts": {

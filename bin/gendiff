@@ -32,5 +32,6 @@ $pathToFile1 = file_exists($args['<firstFile>']) ? $args['<firstFile>'] : __DIR_
 $pathToFile2 = file_exists($args['<secondFile>']) ? $args['<secondFile>'] : __DIR__ . "/" . $args['<secondFile>'];
 $data1 = getData($pathToFile1);
 $data2 = getData($pathToFile2);
-$diff = getDiff($data1, $data2);
+$format = $args['--format'] ?? 'pretty';
+$diff = getDiff($data1, $data2, $format);
 echo($diff);
