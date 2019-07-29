@@ -2,8 +2,6 @@
 <?php
 
 use function \Project\getDiff\getDiff;
-use function \Project\getDiff\example;
-use function \Project\getData\getData;
 
 $path1 = __DIR__ . '/../vendor/autoload.php';
 $path2 = __DIR__ . '/../../../autoload.php';
@@ -30,8 +28,7 @@ $args = Docopt::handle($doc);
 
 $pathToFile1 = file_exists($args['<firstFile>']) ? $args['<firstFile>'] : __DIR__ . "/" . $args['<firstFile>'];
 $pathToFile2 = file_exists($args['<secondFile>']) ? $args['<secondFile>'] : __DIR__ . "/" . $args['<secondFile>'];
-$data1 = getData($pathToFile1);
-$data2 = getData($pathToFile2);
+
 $format = $args['--format'] ?? 'pretty';
-$diff = getDiff($data1, $data2, $format);
+$diff = getDiff($pathToFile1, $pathToFile2, $format);
 echo($diff);
