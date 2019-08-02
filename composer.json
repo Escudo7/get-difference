@@ -12,10 +12,8 @@
     ],
     "autoload": {
         "files": [
-            "src/buildAst.php",
-            "src/getData/getData.php",
-            "src/getData/json.php",
-            "src/getData/yml.php",
+            "src/builderAst.php",
+            "src/parserData.php",
             "src/getDiff.php",
             "src/renderer/json.php",
             "src/renderer/plain.php",

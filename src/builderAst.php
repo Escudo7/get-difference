@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\buildAst;
+namespace Project\BuilderAst;
 
 use Funct\Collection;
 

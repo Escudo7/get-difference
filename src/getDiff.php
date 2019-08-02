@@ -1,10 +1,10 @@
 <?php
 
-namespace Project\getDiff;
+namespace Project\Diff;
 
 use Funct\Collection;
-use function Project\getData\getData;
-use function Project\buildAst\buildAst;
+use function Project\ParserData\getData;
+use function Project\BuilderAst\buildAst;
 
 function getDiff($pathToFile1, $pathToFile2, $format)
 {
