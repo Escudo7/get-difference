@@ -10,12 +10,7 @@ function buildAst($data1, $data2)
     $ast = array_reduce($keys, function ($acc, $key) use ($data1, $data2) {
         if (isset($data1[$key]) && isset($data2[$key])) {
             if ($data1[$key] === $data2[$key]) {
-                $node = [];
-                $node['typeNode'] = 'unmodified';
-                $node['key'] = $key;
-                $node['oldValue'] = $data1[$key];
-                $node['newValue'] = $data2[$key];
-                $acc[] = $node;
+                $acc[] = buildNode('unmodified', $key, $data1[$key], $data2[$key]);
             } else {
                 if (is_array($data1[$key]) && is_array($data2[$key])) {
                     $node = [];
@@ -24,30 +19,25 @@ function buildAst($data1, $data2)
                     $node['ast'] = buildAst($data1[$key], $data2[$key]);
                     $acc[] = $node;
                 } else {
-                    $node = [];
-                    $node['typeNode'] = 'modified';
-                    $node['key'] = $key;
-                    $node['oldValue'] = $data1[$key];
-                    $node['newValue'] = $data2[$key];
-                    $acc[] = $node;
+                    $acc[] = buildNode('modified', $key, $data1[$key], $data2[$key]);
                 }
             }
         } elseif (isset($data1[$key])) {
-            $node = [];
-            $node['typeNode'] = 'deleted';
-            $node['key'] = $key;
-            $node['oldValue'] = $data1[$key];
-            $node['newValue'] = '';
-            $acc[] = $node;
+            $acc[] = buildNode('deleted', $key, $data1[$key], '');
         } else {
-            $node = [];
-            $node['typeNode'] = 'added';
-            $node['key'] = $key;
-            $node['oldValue'] = '';
-            $node['newValue'] = $data2[$key];
-            $acc[] = $node;
+            $acc[] = buildNode('added', $key, '', $data2[$key]);
         }
         return $acc;
     }, []);
     return $ast;
+}
+
+function buildNode($typeNode, $key, $oldValue, $newValue)
+{
+    $node = [];
+    $node['typeNode'] = $typeNode;
+    $node['key'] = $key;
+    $node['oldValue'] = $oldValue;
+    $node['newValue'] = $newValue;
+    return $node;
 }
