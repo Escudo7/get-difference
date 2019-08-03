@@ -7,139 +7,106 @@ use function Project\renderer\utilities\convertValue;
 
 const ADDED = '  + ';
 const DELETED = '  - ';
-const INDENT = '    ';
+const INDENT_STANDART = '    ';
 const UNMODIFIED = '    ';
 
-function render($ast, $indent = '')
+function render($ast)
 {
-    $renderer = '{' . PHP_EOL . getView($ast)  . PHP_EOL . '}' . PHP_EOL;
-    return $renderer;
+    $initialString = '{' . PHP_EOL;
+    $body =  getView($ast);
+    $endString = PHP_EOL . '}' . PHP_EOL;
+    return "{$initialString}{$body}{$endString}";
 }
 
-function getView($ast, $indent = '')
+function getView($ast, $depth = 1)
 {
-    $identefiers = array_keys($ast);
-    $view = array_reduce($identefiers, function ($acc, $identefier) use ($ast, $indent) {
-        $data = $ast[$identefier];
-        switch ($identefier) {
+    $view = array_reduce($ast, function ($acc, $data) use ($depth) {
+        switch ($data['typeNode']) {
             case 'modified':
-                $acc[] = renderNodesModified($data, $indent);
+                $acc[] = renderNodesDeleted($data, $depth);
+                $acc[] = renderNodesAdded($data, $depth);
                 break;
             case 'unmodified':
-                $acc[] = renderNodesUnmodified($data, $indent);
+                $acc[] = renderNodesUnmodified($data, $depth);
                 break;
             case 'deleted':
-                $acc[] = renderNodesDeleted($data, $indent);
+                $acc[] = renderNodesDeleted($data, $depth);
                 break;
             case 'added':
-                $acc[] = renderNodesAdded($data, $indent);
+                $acc[] = renderNodesAdded($data, $depth);
                 break;
             case 'nested':
-                $acc[] = renderNodesNested($data, $indent);
+                $acc[] = renderNodesNested($data, $depth);
         }
         return $acc;
     }, []);
     return implode("\n", $view);
 }
 
-function renderNodesModified($data, $indent)
+function renderNodesDeleted($data, $depth)
 {
-    $keys = array_keys($data);
-    $view = array_reduce($keys, function ($acc, $key) use ($data, $indent) {
-        $oldValue = $data[$key]['oldValue'];
-        $newValue = $data[$key]['newValue'];
-        if (is_array($oldValue)) {
-            $acc[] = renderArray($key, $oldValue, $indent, DELETED);
-        } else {
-            $acc[] = $indent . DELETED . "$key: " . convertValue($oldValue);
-        }
-        if (is_array($newValue)) {
-            $acc[] = renderArray($key, $newValue, $indent, ADDED);
-        } else {
-            $acc[] = $indent . ADDED . "$key: " . convertValue($newValue);
-        }
-        return $acc;
-    }, []);
-    return implode("\n", $view);
+    $prefix = getIndent($depth) . DELETED;
+    $value = getValue($data['oldValue'], $depth);
+    $view = "{$prefix}{$data['key']}: $value";
+    return $view;
 }
 
-function renderNodesDeleted($data, $indent)
+function renderNodesAdded($data, $depth)
 {
-    $keys = array_keys($data);
-    $view = array_reduce($keys, function ($acc, $key) use ($data, $indent) {
-        $oldValue = $data[$key]['oldValue'];
-        if (is_array($oldValue)) {
-            $acc[] = renderArray($key, $oldValue, $indent, DELETED);
-        } else {
-            $acc[] = $indent . DELETED . "$key: " . convertValue($oldValue);
-        }
-        return $acc;
-    }, []);
-    return implode("\n", $view);
+    $prefix = getIndent($depth) . ADDED;
+    $value = getValue($data['newValue'], $depth);
+    $view = "{$prefix}{$data['key']}: $value";
+    return $view;
 }
 
-function renderNodesAdded($data, $indent)
+function renderNodesUnmodified($data, $depth)
 {
-    $keys = array_keys($data);
-    $view = array_reduce($keys, function ($acc, $key) use ($data, $indent) {
-        $newValue = $data[$key]['newValue'];
-        if (is_array($newValue)) {
-            $acc[] = renderArray($key, $newValue, $indent, ADDED);
-        } else {
-            $acc[] = $indent . ADDED . "$key: " . convertValue($newValue);
-        }
-        return $acc;
-    }, []);
-    return implode("\n", $view);
+    $prefix = getIndent($depth) . UNMODIFIED;
+    $value = getValue($data['newValue'], $depth);
+    $view = "{$prefix}{$data['key']}: $value";
+    return $view;
 }
 
-function renderNodesNested($data, $indent)
+function renderNodesNested($data, $depth)
 {
-    $keys = array_keys($data);
-    $view = array_reduce($keys, function ($acc, $key) use ($data, $indent) {
-        $nestedValue = $data[$key];
-        $newIndent = $indent . INDENT;
-        $viewNestedValue = [];
-        $viewNestedValue[] = $indent . UNMODIFIED . "$key: {";
-        $viewNestedValue[] = getView($nestedValue, $newIndent);
-        $viewNestedValue[] = $indent . UNMODIFIED . "}";
-        $acc[] = implode("\n", $viewNestedValue);
-        return $acc;
-    }, []);
-    return implode("\n", $view);
+    $prefix = getIndent($depth) . UNMODIFIED;
+    $initialString = "{$prefix}{$data['key']}: {\n";
+    $body = getView($data['ast'], $depth + 1);
+    $endString = "\n" . getIndent($depth + 1) . "}";
+    return "{$initialString}{$body}{$endString}";
 }
 
-function renderNodesUnmodified($data, $indent)
+function renderArray($array, $depth)
 {
-    $keys = array_keys($data);
-    $view = array_reduce($keys, function ($acc, $key) use ($data, $indent) {
-        $value = $data[$key];
-        if (is_array($value)) {
-            $acc[] = renderArray($key, $value, $indent, UNMODIFIED);
-        } else {
-            $acc[] = $indent . UNMODIFIED . "$key: " . convertValue($value);
-        }
-        return $acc;
-    }, []);
-    return implode("\n", $view);
+    $keys = array_keys($array);
+    $viewArray = array_map(function ($key) use ($array, $depth) {
+        $prefix = getIndent($depth) . UNMODIFIED;
+        $value = getValue($array[$key], $depth);
+        return "{$prefix}{$key}: $value";
+    }, $keys);
+    $initialString = "{\n";
+    $endString = "\n" . getIndent($depth) . "}";
+    $body = implode("\n", $viewArray);
+    return "{$initialString}{$body}{$endString}";
 }
 
-function renderArray($key, $value, $indent, $modifier = UNMODIFIED)
+function getIndent($depth)
 {
-    $view = [];
-    $view[] = $indent . $modifier . "$key: {";
-    $nestedKeys = array_keys($value);
-    $viewValue = array_reduce($nestedKeys, function ($acc, $nestedKey) use ($value, $indent) {
-        $newIndent = $indent . INDENT;
-        $nestedValue = $value[$nestedKey];
-        if (is_array($nestedValue)) {
-            $acc[] = renderArray($nestedKey, $value[$nestedKey], $newIndent);
-        } else {
-            $acc[] = $newIndent . UNMODIFIED . "$nestedKey: " . convertValue($nestedValue);
-        }
-        return $acc;
-    }, []);
-    $view[] = implode("\n", $viewValue);
-    $view[] = $indent . UNMODIFIED . "}";
-    return implode("\n", $view);
+    $indent = '';
+    for ($i = 1; $i < $depth; $i++) {
+        $indent .= INDENT_STANDART;
+    }
+    return $indent;
+}
+
+function getValue($data, $depth)
+{
+    switch (gettype($data)) {
+        case 'boolean':
+            return convertValue($data);
+        case 'array':
+            return renderArray($data, $depth + 1);
+        default:
+            return $data;
+    }
 }

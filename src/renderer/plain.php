@@ -17,73 +17,51 @@ function render($ast)
 
 function getView($ast, $parentKey = '')
 {
-    $identefiers = array_keys($ast);
-    $view = array_reduce($identefiers, function ($acc, $identefier) use ($ast, $parentKey) {
-        $data = $ast[$identefier];
-        switch ($identefier) {
+    $view = array_reduce($ast, function ($acc, $node) use ($parentKey) {
+        switch ($node['typeNode']) {
             case 'modified':
-                $acc[] = renderNodesModified($data, $parentKey);
+                $acc[] = renderNodesModified($node, $parentKey);
                 break;
             case 'unmodified':
                 break;
             case 'deleted':
-                $acc[] = renderNodesDeleted($data, $parentKey);
+                $acc[] = renderNodesDeleted($node, $parentKey);
                 break;
             case 'added':
-                $acc[] = renderNodesAdded($data, $parentKey);
+                $acc[] = renderNodesAdded($node, $parentKey);
                 break;
             case 'nested':
-                $acc[] = renderNodesNested($data, $parentKey);
+                $acc[] = renderNodesNested($node, $parentKey);
         }
         return $acc;
     }, []);
     return implode("\n", $view);
 }
 
-function renderNodesModified($data, $parentKey)
+function renderNodesModified($node, $parentKey)
 {
-    $keys = array_keys($data);
-    $view = array_reduce($keys, function ($acc, $key) use ($data, $parentKey) {
-        $oldValue = is_array($data[$key]['oldValue']) ? VALUE_IS_ARRAY : $data[$key]['oldValue'];
-        $newValue = is_array($data[$key]['newValue']) ? VALUE_IS_ARRAY : $data[$key]['newValue'];
-        $keyWithParent = $parentKey == '' ? $key : "$parentKey.$key";
-        $acc[] = sprintf(MODIFIED, $keyWithParent, convertValue($oldValue), convertValue($newValue));
-        return $acc;
-    }, []);
-    return implode("\n", $view);
+    $keyWithParent = $parentKey == '' ? $node['key'] : "{$parentKey}.{$node['key']}";
+    $oldValue = is_array($node['oldValue']) ? VALUE_IS_ARRAY : $node['oldValue'];
+    $newValue = is_array($node['newValue']) ? VALUE_IS_ARRAY : $node['newValue'];
+    return sprintf(MODIFIED, $keyWithParent, convertValue($oldValue), convertValue($newValue));
 }
 
-function renderNodesDeleted($data, $parentKey)
+function renderNodesDeleted($node, $parentKey)
 {
-    $keys = array_keys($data);
-    $view = array_reduce($keys, function ($acc, $key) use ($data, $parentKey) {
-        $keyWithParent = $parentKey == '' ? $key : "$parentKey.$key";
-        $acc[] = sprintf(DELETED, $keyWithParent);
-        return $acc;
-    }, []);
-    return implode("\n", $view);
+    $keyWithParent = $parentKey == '' ? $node['key'] : "{$parentKey}.{$node['key']}";
+    $value = is_array($node['oldValue']) ? VALUE_IS_ARRAY : $node['oldValue'];
+    return sprintf(DELETED, $keyWithParent, convertValue($value));
 }
 
-function renderNodesAdded($data, $parentKey)
+function renderNodesAdded($node, $parentKey)
 {
-    $keys = array_keys($data);
-    $view = array_reduce($keys, function ($acc, $key) use ($data, $parentKey) {
-        $value = is_array($data[$key]['newValue']) ? VALUE_IS_ARRAY : $data[$key]['newValue'];
-        $keyWithParent = $parentKey == '' ? $key : "$parentKey.$key";
-        $acc[] = sprintf(ADDED, $keyWithParent, convertValue($value));
-        return $acc;
-    }, []);
-    return implode("\n", $view);
+    $keyWithParent = $parentKey == '' ? $node['key'] : "{$parentKey}.{$node['key']}";
+    $value = is_array($node['newValue']) ? VALUE_IS_ARRAY : $node['newValue'];
+    return sprintf(ADDED, $keyWithParent, convertValue($value));
 }
 
-function renderNodesNested($data, $parentKey)
+function renderNodesNested($node, $parentKey)
 {
-    $keys = array_keys($data);
-    $view = array_reduce($keys, function ($acc, $key) use ($data, $parentKey) {
-        $value = $data[$key];
-        $newParentKey = $parentKey == '' ? $key : "$parentKey.$key";
-        $acc[] = getView($value, $newParentKey);
-        return $acc;
-    }, []);
-    return implode("\n", $view);
+    $keyWithParent = $parentKey == '' ? $node['key'] : "{$parentKey}.{$node['key']}";
+    return getView($node['ast'], $keyWithParent);
 }

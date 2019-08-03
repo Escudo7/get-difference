@@ -18,27 +18,28 @@ class DiffTest extends TestCase
 }\n";
 
         $this->prettyDiffNested = "{
-    host: hexlet.io
-    unmodifiedArray: {
-        key1: value1
-        key2: value2
-    }
-  - timeout: 50
-  + timeout: 20
-  - proxy: 123.234.53.22
-    modifiedArray: {
-      - big: bag
-      + big: head
-        cat: dog
-      + newCat: {
-            one: pers
-            two: sfinks
+    common: {
+        setting1: Value 1
+      - setting2: 200
+        setting3: true
+      - setting6: {
+            key: value
+        }
+      + setting4: blah blah
+      + setting5: {
+            key5: value5
         }
     }
-  + verbose: true
-  + newArray: {
-        newKey1: value1
-        newKey2: value2
+    group1: {
+      - baz: bas
+      + baz: bars
+        foo: bar
+    }
+  - group2: {
+        abc: 12345
+    }
+  + group3: {
+        fee: 100500
     }
 }\n";
 
@@ -57,32 +58,32 @@ Property 'group3' was added with value: 'complex value'\n";
 
     public function testPrettyDiffFlat()
     {
-        $pathToFile1 = __DIR__ . "/testsFiles/beforePrettyFlat.json";
-        $pathToFile2 = __DIR__ . "/testsFiles/afterPrettyFlat.json";
+        $pathToFile1 = __DIR__ . "/testsFiles/flatBefore.json";
+        $pathToFile2 = __DIR__ . "/testsFiles/flatAfter.json";
         $result = $this->prettyDiffFlat;
         $this->assertEquals($result, getDiff($pathToFile1, $pathToFile2, 'pretty'));
     }
 
     public function testPrettyDiffNested()
     {
-        $pathToFile1 = __DIR__ . "/testsFiles/beforePrettyNested.json";
-        $pathToFile2 = __DIR__ . "/testsFiles/afterPrettyNested.json";
+        $pathToFile1 = __DIR__ . "/testsFiles/nestedBefore.yml";
+        $pathToFile2 = __DIR__ . "/testsFiles/nestedAfter.yml";
         $result = $this->prettyDiffNested;
         $this->assertEquals($result, getDiff($pathToFile1, $pathToFile2, 'pretty'));
     }
 
     public function testPlainDiffFlat()
     {
-        $pathToFile1 = __DIR__ . "/testsFiles/beforePlainFlat.yml";
-        $pathToFile2 = __DIR__ . "/testsFiles/afterPlainFlat.yml";
+        $pathToFile1 = __DIR__ . "/testsFiles/flatBefore.json";
+        $pathToFile2 = __DIR__ . "/testsFiles/flatAfter.json";
         $result = $this->plainDiffFlat;
         $this->assertEquals($result, getDiff($pathToFile1, $pathToFile2, 'plain'));
     }
 
     public function testPlainDiffNestes()
     {
-        $pathToFile1 = __DIR__ . "/testsFiles/beforePlainNested.yml";
-        $pathToFile2 = __DIR__ . "/testsFiles/afterPlainNested.yml";
+        $pathToFile1 = __DIR__ . "/testsFiles/nestedBefore.yml";
+        $pathToFile2 = __DIR__ . "/testsFiles/nestedAfter.yml";
         $result = $this->plainDiffNested;
         $this->assertEquals($result, getDiff($pathToFile1, $pathToFile2, 'plain'));
     }
