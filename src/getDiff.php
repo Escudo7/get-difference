@@ -3,7 +3,7 @@
 namespace Project\Diff;
 
 use Funct\Collection;
-use function Project\ParserData\getData;
+use function Project\Parser\getData;
 use function Project\BuilderAst\buildAst;
 
 function getDiff($pathToFile1, $pathToFile2, $format)

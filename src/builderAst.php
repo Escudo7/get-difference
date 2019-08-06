@@ -10,34 +10,33 @@ function buildAst($data1, $data2)
     $ast = array_reduce($keys, function ($acc, $key) use ($data1, $data2) {
         if (isset($data1[$key]) && isset($data2[$key])) {
             if ($data1[$key] === $data2[$key]) {
-                $acc[] = buildNode('unmodified', $key, $data1[$key], $data2[$key]);
+                $acc[] = buildNode('unmodified', $key, $data1[$key], $data2[$key], '');
             } else {
                 if (is_array($data1[$key]) && is_array($data2[$key])) {
-                    $node = [];
-                    $node['typeNode'] = 'nested';
-                    $node['key'] = $key;
-                    $node['ast'] = buildAst($data1[$key], $data2[$key]);
-                    $acc[] = $node;
+                    $nestedAst = buildAst($data1[$key], $data2[$key]);
+                    $acc[] = buildNode('nested', $key, '', '', $nestedAst);
                 } else {
-                    $acc[] = buildNode('modified', $key, $data1[$key], $data2[$key]);
+                    $acc[] = buildNode('modified', $key, $data1[$key], $data2[$key], '');
                 }
             }
         } elseif (isset($data1[$key])) {
-            $acc[] = buildNode('deleted', $key, $data1[$key], '');
+            $acc[] = buildNode('deleted', $key, $data1[$key], '', '');
         } else {
-            $acc[] = buildNode('added', $key, '', $data2[$key]);
+            $acc[] = buildNode('added', $key, '', $data2[$key], '');
         }
         return $acc;
     }, []);
     return $ast;
 }
 
-function buildNode($typeNode, $key, $oldValue, $newValue)
+function buildNode($typeNode, $key, $oldValue, $newValue, $ast)
 {
-    $node = [];
-    $node['typeNode'] = $typeNode;
-    $node['key'] = $key;
-    $node['oldValue'] = $oldValue;
-    $node['newValue'] = $newValue;
+    $node = [
+        'typeNode' => $typeNode,
+        'key' => $key,
+        'oldValue' => $oldValue,
+        'newValue' => $newValue,
+        'ast' => $ast
+    ];
     return $node;
 }

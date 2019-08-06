@@ -13,11 +13,11 @@
     "autoload": {
         "files": [
             "src/builderAst.php",
-            "src/parserData.php",
+            "src/parser.php",
             "src/getDiff.php",
-            "src/renderer/plain.php",
-            "src/renderer/pretty.php",
-            "src/renderer/utilities.php"
+            "src/renderers/plain.php",
+            "src/renderers/pretty.php",
+            "src/renderers/utilities.php"
         ]
     },
     "scripts": {

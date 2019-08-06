@@ -18,7 +18,7 @@ function render($ast)
     return "{$initialString}{$body}{$endString}";
 }
 
-function getView($ast, $depth = 1)
+function getView($ast, $depth = 0)
 {
     $view = array_reduce($ast, function ($acc, $data) use ($depth) {
         switch ($data['typeNode']) {
@@ -92,10 +92,8 @@ function renderArray($array, $depth)
 
 function getIndent($depth)
 {
-    $indent = '';
-    for ($i = 1; $i < $depth; $i++) {
-        $indent .= INDENT_STANDART;
-    }
+    $lengthIndent = strlen(INDENT_STANDART) * $depth;
+    $indent = str_pad('', $lengthIndent, INDENT_STANDART);
     return $indent;
 }
 
