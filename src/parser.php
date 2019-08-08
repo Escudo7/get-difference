@@ -15,8 +15,20 @@ function getData($pathToFile)
         }
     ];
     
+    $content = getContent($pathToFile);
+    $extension = getExtension($pathToFile);
+    $data = $mapping[$extension]($content);
+    return $data;
+}
+
+function getContent($pathToFile)
+{
+    return file_get_contents($pathToFile);
+}
+
+function getExtension($pathToFile)
+{
     $pathInfo = pathinfo($pathToFile);
     $extension = $pathInfo['extension'];
-    $content = file_get_contents($pathToFile);
-    return $mapping[$extension]($content);
+    return $extension;
 }

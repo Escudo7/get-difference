@@ -71,7 +71,7 @@ function renderNodesNested($data, $depth)
 {
     $prefix = getIndent($depth) . UNMODIFIED;
     $initialString = "{$prefix}{$data['key']}: {\n";
-    $body = getView($data['ast'], $depth + 1);
+    $body = getView($data['nestedAst'], $depth + 1);
     $endString = "\n" . getIndent($depth + 1) . "}";
     return "{$initialString}{$body}{$endString}";
 }

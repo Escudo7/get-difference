@@ -41,7 +41,7 @@ function getView($ast, $parentKey = '')
 function renderNodesNested($node, $parentKey)
 {
     $keyWithParent = $parentKey == '' ? $node['key'] : "{$parentKey}.{$node['key']}";
-    return getView($node['ast'], $keyWithParent);
+    return getView($node['nestedAst'], $keyWithParent);
 }
 
 function stringify($template, $node, $parentKey)
