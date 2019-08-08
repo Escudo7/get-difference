@@ -1,1 +1,0 @@
-"Property 'common.setting2' was removed\nProperty 'common.setting6' was removed\nProperty 'common.setting4' was added with value: 'blah blah'\nProperty 'common.setting5' was added with value: 'complex value'\nProperty 'group1.baz' was changed. From 'bas' to 'bars'\nProperty 'group2' was removed\nProperty 'group3' was added with value: 'complex value'\n" 
