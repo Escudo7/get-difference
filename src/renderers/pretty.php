@@ -1,26 +1,26 @@
 <?php
 
-namespace Project\renderer\pretty;
+namespace Project\renderers\pretty;
 
 use Funct\Collection;
-use function Project\renderer\utilities\convertValue;
+use function Project\renderers\utilities\convertValue;
 
 const ADDED = '  + ';
 const DELETED = '  - ';
 const INDENT_STANDART = '    ';
 const UNMODIFIED = '    ';
 
-function render($ast)
+function renderDiff($ast)
 {
     $initialString = '{' . PHP_EOL;
-    $body =  getView($ast);
-    $endString = PHP_EOL . '}' . PHP_EOL;
-    return "{$initialString}{$body}{$endString}";
+    $bodyDiff =  getBodyDiff($ast);
+    $endString = PHP_EOL . '}';
+    return "{$initialString}{$bodyDiff}{$endString}";
 }
 
-function getView($ast, $depth = 0)
+function getBodyDiff($ast, $depth = 0)
 {
-    $view = array_reduce($ast, function ($acc, $data) use ($depth) {
+    $bodyDiff = array_reduce($ast, function ($acc, $data) use ($depth) {
         switch ($data['typeNode']) {
             case 'modified':
                 $acc[] = renderNodesDeleted($data, $depth);
@@ -40,7 +40,7 @@ function getView($ast, $depth = 0)
         }
         return $acc;
     }, []);
-    return implode("\n", $view);
+    return implode("\n", $bodyDiff);
 }
 
 function renderNodesDeleted($data, $depth)
@@ -71,7 +71,7 @@ function renderNodesNested($data, $depth)
 {
     $prefix = getIndent($depth) . UNMODIFIED;
     $initialString = "{$prefix}{$data['key']}: {\n";
-    $body = getView($data['nestedAst'], $depth + 1);
+    $body = getBodyDiff($data['nestedAst'], $depth + 1);
     $endString = "\n" . getIndent($depth + 1) . "}";
     return "{$initialString}{$body}{$endString}";
 }

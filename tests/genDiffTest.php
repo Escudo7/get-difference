@@ -7,43 +7,51 @@ use function Project\Diff\getDiff;
 
 class DiffTest extends TestCase
 {
+    public function setUp(): void
+    {
+        $this->beforeFlat = __DIR__ . "/testsFiles/flatBefore.json";
+        $this->afterFlat = __DIR__ . "/testsFiles/flatAfter.json";
+        $this->beforeNested = __DIR__ . "/testsFiles/nestedBefore.yml";
+        $this->afterNested = __DIR__ . "/testsFiles/nestedAfter.yml";
+    }
+    
     public function testPrettyDiffFlat()
     {
-        $pathToFile1 = __DIR__ . "/testsFiles/flatBefore.json";
-        $pathToFile2 = __DIR__ . "/testsFiles/flatAfter.json";
         $pathToResult = __DIR__ . "/testsFiles/resultFlatPretty";
         $result = file_get_contents($pathToResult);
 
-        $this->assertEquals($result, getDiff($pathToFile1, $pathToFile2, 'pretty'));
+        $this->assertEquals($result, getDiff($this->beforeFlat, $this->afterFlat, 'pretty'));
     }
 
     public function testPrettyDiffNested()
     {
-        $pathToFile1 = __DIR__ . "/testsFiles/nestedBefore.yml";
-        $pathToFile2 = __DIR__ . "/testsFiles/nestedAfter.yml";
         $pathToResult = __DIR__ . "/testsFiles/resultNestedPretty";
         $result = file_get_contents($pathToResult);
         
-        $this->assertEquals($result, getDiff($pathToFile1, $pathToFile2, 'pretty'));
+        $this->assertEquals($result, getDiff($this->beforeNested, $this->afterNested, 'pretty'));
     }
 
     public function testPlainDiffFlat()
     {
-        $pathToFile1 = __DIR__ . "/testsFiles/flatBefore.json";
-        $pathToFile2 = __DIR__ . "/testsFiles/flatAfter.json";
         $pathToResult = __DIR__ . "/testsFiles/resultFlatPlain";
         $result = file_get_contents($pathToResult);
 
-        $this->assertEquals($result, getDiff($pathToFile1, $pathToFile2, 'plain'));
+        $this->assertEquals($result, getDiff($this->beforeFlat, $this->afterFlat, 'plain'));
     }
 
     public function testPlainDiffNestes()
     {
-        $pathToFile1 = __DIR__ . "/testsFiles/nestedBefore.yml";
-        $pathToFile2 = __DIR__ . "/testsFiles/nestedAfter.yml";
         $pathToResult = __DIR__ . "/testsFiles/resultNestedPlain";
         $result = file_get_contents($pathToResult);
 
-        $this->assertEquals($result, getDiff($pathToFile1, $pathToFile2, 'plain'));
+        $this->assertEquals($result, getDiff($this->beforeNested, $this->afterNested, 'plain'));
+    }
+
+    public function testJsonDiffFlat()
+    {
+        $pathToResult = __DIR__ . "/testsFiles/resultFlatJson";
+        $result = file_get_contents($pathToResult);
+
+        $this->assertEquals($result, getDiff($this->beforeFlat, $this->afterFlat, 'json'));
     }
 }

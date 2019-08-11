@@ -14,7 +14,8 @@
         "files": [
             "src/builderAst.php",
             "src/parser.php",
-            "src/getDiff.php",
+            "src/diff.php",
+            "src/renderers/json.php",
             "src/renderers/plain.php",
             "src/renderers/pretty.php",
             "src/renderers/utilities.php"

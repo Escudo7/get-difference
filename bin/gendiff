@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-use function \Project\Diff\getDiff;
+use function \Project\diff\getDiff;
 
 $path1 = __DIR__ . '/../vendor/autoload.php';
 $path2 = __DIR__ . '/../../../autoload.php';

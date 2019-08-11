@@ -1,0 +1,30 @@
+[
+    {
+        "typeNode": "unmodified",
+        "key": "host",
+        "oldValue": "hexlet.io",
+        "newValue": "hexlet.io",
+        "nestedAst": []
+    },
+    {
+        "typeNode": "modified",
+        "key": "timeout",
+        "oldValue": 50,
+        "newValue": 20,
+        "nestedAst": []
+    },
+    {
+        "typeNode": "deleted",
+        "key": "proxy",
+        "oldValue": "123.234.53.22",
+        "newValue": "",
+        "nestedAst": []
+    },
+    {
+        "typeNode": "added",
+        "key": "verbose",
+        "oldValue": "",
+        "newValue": true,
+        "nestedAst": []
+    }
+]

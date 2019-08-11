@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\renderer\utilities;
+namespace Project\renderers\utilities;
 
 function convertValue($data)
 {
