@@ -15,6 +15,7 @@
             "src/builderAst.php",
             "src/parser.php",
             "src/diff.php",
+            "src/cli.php",
             "src/renderers/json.php",
             "src/renderers/plain.php",
             "src/renderers/pretty.php",

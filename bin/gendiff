@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-use function \Project\diff\getDiff;
+use function \Project\diff\cli\run;
 
 $path1 = __DIR__ . '/../vendor/autoload.php';
 $path2 = __DIR__ . '/../../../autoload.php';
@@ -11,22 +11,4 @@ if (file_exists($path1)) {
   require $path2;
 }
 
-$doc = <<<DOC
-Generate diff
-
-Usage:
-  gendiff (-h | --help)
-  gendiff [--format <fmt>] <firstFile> <secondFile>
-
-Options:
-  -h --help         Show this screen.
-  --format <fmt>    Report format [default: pretty]
-
-DOC;
-
-$args = Docopt::handle($doc);
-$pathToFile1 = realpath($args['<firstFile>']);
-$pathToFile2 = realpath($args['<secondFile>']);
-$format = $args['--format'];
-$diff = getDiff($pathToFile1, $pathToFile2, $format);
-echo($diff);
+run();
